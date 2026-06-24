@@ -49,7 +49,26 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress) => {
     return outputBlob;
   } catch (error) {
     console.error('HuggingFace Conversion Error:', error);
-    // As per specs: throw readable waking up error
-    throw new Error('LibreOffice conversion failed. Space may be waking up, try again in 30s.');
+    
+    // Extract the real error from the API response if available
+    let errorMessage = 'LibreOffice conversion failed. Space may be waking up, try again in 30s.';
+    
+    if (error.response && error.response.data) {
+        if (error.response.data instanceof Blob) {
+            try {
+                const text = await error.response.data.text();
+                const json = JSON.parse(text);
+                errorMessage = json.detail || text;
+            } catch (e) {
+                errorMessage = 'Backend API Error: ' + error.message;
+            }
+        } else if (error.response.data.detail) {
+            errorMessage = error.response.data.detail;
+        }
+    } else if (error.message) {
+        errorMessage = error.message;
+    }
+    
+    throw new Error(errorMessage);
   }
 };
