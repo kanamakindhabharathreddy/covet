@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const convertViaHuggingFace = async (file, targetFormat, onProgress) => {
   try {
-    const HF_URL = import.meta.env.VITE_HF_SPACE_URL;
+    const HF_URL = import.meta.env.VITE_HF_SPACE_URL || 'https://bharath491-covet-converter.hf.space';
     if (!HF_URL) {
       throw new Error('HuggingFace Space URL is not configured in .env variables.');
     }
