@@ -4,6 +4,7 @@ import UploadZone from '../components/UploadZone';
 import FormatSelector from '../components/FormatSelector';
 import ProgressBar from '../components/ProgressBar';
 import DownloadCard from '../components/DownloadCard';
+import MultiImagePdfBuilder from '../components/MultiImagePdfBuilder';
 import { convertWithFFmpeg } from '../converters/ffmpegConverter';
 import { convertImage } from '../converters/imageConverter';
 import { convertData } from '../converters/dataConverter';
@@ -31,7 +32,7 @@ const iconMap = {
 };
 
 export default function Converter() {
-  // State Machine: IDLE -> SELECTED -> CONVERTING -> DONE
+  // State Machine: IDLE -> SELECTED -> BUILDING_PDF -> CONVERTING -> DONE
   const [appState, setAppState] = useState('IDLE'); 
   
   const [file, setFile] = useState(null);
@@ -62,6 +63,12 @@ export default function Converter() {
   const handleConvert = async (format, engine) => {
     setTargetFormat(format);
     setErrorMsg(null);
+
+    // If it's a multi-image PDF build, branch off early
+    if (engine === 'jspdf') {
+      setAppState('BUILDING_PDF');
+      return;
+    }
 
     // Mock other engines via Toast as requested
     if (engine !== 'ffmpeg' && engine !== 'canvas' && engine !== 'data' && engine !== 'sheetjs' && engine !== 'huggingface' && engine !== 'mammoth' && engine !== 'docx') {
@@ -223,6 +230,18 @@ export default function Converter() {
                 )}
               </AnimatePresence>
             </motion.div>
+          )}
+
+          {appState === 'BUILDING_PDF' && (
+            <MultiImagePdfBuilder 
+              initialFile={file}
+              onCancel={() => setAppState('SELECTED')}
+              onComplete={(pdfBlob) => {
+                setResultBlob(pdfBlob);
+                setTargetFormat('pdf');
+                setAppState('DONE');
+              }}
+            />
           )}
 
           {appState === 'CONVERTING' && !errorMsg && (

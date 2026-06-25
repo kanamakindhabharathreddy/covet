@@ -15,12 +15,12 @@ export const formatMatrix = {
     mkv: { mp4: "ffmpeg", webm: "ffmpeg", avi: "ffmpeg", mov: "ffmpeg" },
   },
   image: {
-    jpg: { jpeg: "canvas", png: "canvas", webp: "canvas", bmp: "canvas", gif: "canvas" },
-    jpeg: { jpg: "canvas", png: "canvas", webp: "canvas", bmp: "canvas", gif: "canvas" },
-    png: { jpg: "canvas", jpeg: "canvas", webp: "canvas", bmp: "canvas", gif: "canvas" },
-    webp: { jpg: "canvas", jpeg: "canvas", png: "canvas", bmp: "canvas", gif: "canvas" },
-    bmp: { jpg: "canvas", jpeg: "canvas", png: "canvas", webp: "canvas", gif: "canvas" },
-    gif: { jpg: "canvas", jpeg: "canvas", png: "canvas", webp: "canvas", bmp: "canvas" },
+    jpg: { jpeg: "canvas", png: "canvas", webp: "canvas", bmp: "canvas", gif: "canvas", pdf: "jspdf" },
+    jpeg: { jpg: "canvas", png: "canvas", webp: "canvas", bmp: "canvas", gif: "canvas", pdf: "jspdf" },
+    png: { jpg: "canvas", jpeg: "canvas", webp: "canvas", bmp: "canvas", gif: "canvas", pdf: "jspdf" },
+    webp: { jpg: "canvas", jpeg: "canvas", png: "canvas", bmp: "canvas", gif: "canvas", pdf: "jspdf" },
+    bmp: { jpg: "canvas", jpeg: "canvas", png: "canvas", webp: "canvas", gif: "canvas", pdf: "jspdf" },
+    gif: { jpg: "canvas", jpeg: "canvas", png: "canvas", webp: "canvas", bmp: "canvas", pdf: "jspdf" },
   },
   document: {
     docx: { txt: "mammoth", html: "mammoth", pdf: "huggingface" },
