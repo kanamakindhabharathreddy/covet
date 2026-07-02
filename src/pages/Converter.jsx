@@ -152,6 +152,10 @@ export default function Converter() {
         });
       }
       
+      if (format === 'unlock') {
+        setTargetFormat('pdf');
+      }
+      
       setResultBlob(blob);
       setAppState('DONE');
       setPassword('');
