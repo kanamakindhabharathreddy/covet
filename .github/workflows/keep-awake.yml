@@ -1,0 +1,14 @@
+name: Keep HuggingFace Space Awake
+
+on:
+  schedule:
+    # Runs every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Health Endpoint
+        run: curl -sSf https://bharath491-covet-converter.hf.space/health > /dev/null || echo "Ping failed but continuing"
