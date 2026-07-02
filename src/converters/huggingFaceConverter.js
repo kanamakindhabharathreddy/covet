@@ -8,7 +8,7 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
     }
 
     if (onProgress) {
-      onProgress({ status: 'processing', ratio: 0.1, message: 'Sending to LibreOffice...' });
+      onProgress({ status: 'processing', ratio: 0.1, message: 'Sending to ONLYOFFICE...' });
     }
 
     const formData = new FormData();
@@ -31,7 +31,7 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
           onProgress({ 
             status: 'processing', 
             ratio: mappedRatio, 
-            message: 'Sending to LibreOffice...' 
+            message: 'Sending to ONLYOFFICE...' 
           });
         }
       }
@@ -57,7 +57,7 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
     console.error('HuggingFace Conversion Error:', error);
     
     // Extract the real error from the API response if available
-    let errorMessage = 'LibreOffice conversion failed. Space may be waking up, try again in 30s.';
+    let errorMessage = 'ONLYOFFICE conversion failed. Space may be waking up, try again in 30s.';
     
     if (error.code === 'ECONNABORTED') {
       errorMessage = 'Request timed out (10m). The file might be too large or your upload speed is slow. Please try again.';
