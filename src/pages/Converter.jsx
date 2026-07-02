@@ -73,7 +73,7 @@ export default function Converter() {
       return;
     }
 
-    if (engine === 'huggingface_unlock') {
+    if (engine === 'huggingface_unlock' && explicitPassword === null) {
       setAppState('PASSWORD_PROMPT');
       return;
     }
