@@ -308,18 +308,39 @@ export default function Converter() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="w-full max-w-2xl p-8 mt-8 rounded-3xl bg-red-500/5 border border-red-500/20 text-center shadow-xl backdrop-blur-md"
+              style={{
+                width: '100%',
+                maxWidth: 420,
+                marginTop: 32,
+                padding: '32px 24px',
+                borderRadius: 16,
+                background: '#0f0f0f',
+                border: '1px solid #1e1e1e',
+                textAlign: 'center',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+              }}
             >
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div style={{
+                width: 64,
+                height: 64,
+                margin: '0 auto 24px',
+                borderRadius: '50%',
+                background: 'rgba(239,68,68,0.08)',
+                border: '1px solid rgba(239,68,68,0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ef4444',
+              }}>
+                <svg style={{ width: 32, height: 32 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-red-400 mb-2">Conversion Failed</h3>
-              <p className="text-red-300/80 mb-8 max-w-md mx-auto">{errorMsg}</p>
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: '#ef4444', marginBottom: 12 }}>Conversion Failed</h3>
+              <p style={{ fontSize: 14, color: '#a1a1aa', marginBottom: 32, lineHeight: 1.5 }}>{errorMsg}</p>
               <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   if (errorMsg.includes("Wrong password")) {
                     setAppState('PASSWORD_PROMPT');
@@ -327,7 +348,25 @@ export default function Converter() {
                     resetState();
                   }
                 }}
-                className="px-10 py-4 rounded-full bg-red-500/20 border border-red-500/30 hover:bg-red-500 text-white font-bold transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                style={{
+                  padding: '12px 32px',
+                  borderRadius: 8,
+                  background: 'transparent',
+                  border: '1px solid #1e1e1e',
+                  color: '#fffbf5',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)';
+                  e.currentTarget.style.color = '#ef4444';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = '#1e1e1e';
+                  e.currentTarget.style.color = '#fffbf5';
+                }}
               >
                 Try Again
               </motion.button>

@@ -26,7 +26,7 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
 
     const response = await axios.post(`${HF_URL}${endpoint}`, formData, {
       responseType: 'blob',
-      timeout: 120000, // 120 second timeout
+      timeout: 600000, // 10 minute timeout to support slow uploads and large files
       onUploadProgress: (progressEvent) => {
         if (onProgress && progressEvent.total) {
           const uploadRatio = progressEvent.loaded / progressEvent.total;
@@ -77,7 +77,7 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
     let errorMessage = 'LibreOffice conversion failed. Space may be waking up, try again in 30s.';
     
     if (error.code === 'ECONNABORTED') {
-      errorMessage = 'Request timed out (120s). The HuggingFace Space may be asleep — try again in 30 seconds.';
+      errorMessage = 'Request timed out (10m). The file might be too large or your upload speed is slow. Please try again.';
     } else if (error.response && error.response.data) {
         if (error.response.data instanceof Blob) {
             try {
