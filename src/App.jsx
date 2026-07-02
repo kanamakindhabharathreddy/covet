@@ -6,9 +6,10 @@ import OCR from './pages/OCR';
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div style={{ minHeight: '100vh', position: 'relative' }}>
+      <div className="top-glow"></div>
       <Header />
-      <main className="flex-grow flex flex-col">
+      <main style={{ position: 'relative', zIndex: 1 }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/convert" element={<Converter />} />

@@ -77,7 +77,6 @@ export default function UploadZone({ onFileReady }) {
       const file = e.target.files[0];
       await processFile(file);
     }
-    // reset so the same file can be selected again if needed
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -110,12 +109,18 @@ export default function UploadZone({ onFileReady }) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative flex flex-col items-center justify-center p-12 text-center rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
-          isDragActive
-            ? 'border-accent bg-accent/10 border-solid shadow-[0_0_20px_rgba(124,58,237,0.3)]'
-            : 'border-accent/50 bg-white/5 border-dashed hover:border-accent hover:bg-accent/5'
-        }`}
+        className="relative flex flex-col items-center justify-center p-12 text-center cursor-pointer"
+        style={{
+          minHeight: 280,
+          background: isDragActive ? 'rgba(212,168,67,0.03)' : '#0f0f0f',
+          border: isDragActive ? '1.5px solid rgba(212,168,67,0.4)' : '1px solid #1e1e1e',
+          borderRadius: 16,
+          overflow: 'hidden',
+          transition: 'all 0.15s ease',
+        }}
       >
+        <div className="upload-glow" />
+
         <input
           type="file"
           ref={fileInputRef}
@@ -126,36 +131,68 @@ export default function UploadZone({ onFileReady }) {
 
         {!selectedFile ? (
           <>
-            <div className={`w-16 h-16 mb-6 rounded-full flex items-center justify-center transition-colors duration-300 ${isDragActive ? 'bg-accent/30' : 'bg-gray-800'}`}>
-              <svg className={`w-8 h-8 transition-colors duration-300 ${isDragActive ? 'text-white' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            <div style={{
+              width: 64,
+              height: 64,
+              background: 'rgba(212,168,67,0.08)',
+              border: '1px solid rgba(212,168,67,0.15)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 20,
+              position: 'relative',
+              zIndex: 1,
+            }}>
+              <svg style={{ width: 28, height: 28, color: '#d4a843' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
             </div>
-            <p className="text-xl font-semibold text-gray-200 mb-2">
-              {isDragActive ? 'Drop your file here...' : 'Click to browse or drag and drop'}
+            <p style={{ fontSize: 18, fontWeight: 700, color: '#fffbf5', marginBottom: 8, position: 'relative', zIndex: 1 }}>
+              {isDragActive ? 'Drop it here' : 'Drop anything here'}
             </p>
-            <p className="text-sm text-gray-500">
-              Supports Audio, Video, Image, Document, Data, and Spreadsheet files
+            <p style={{ color: '#2a2a2a', fontSize: 13, fontFamily: 'monospace', position: 'relative', zIndex: 1 }}>
+              Audio · Video · Images · Documents · Data
             </p>
           </>
         ) : (
-          <div className="flex flex-col items-center w-full">
-            <div className="w-16 h-16 mb-4 rounded-xl bg-accent/20 flex items-center justify-center">
-              <svg className="w-8 h-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex flex-col items-center w-full" style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{
+              width: 56,
+              height: 56,
+              marginBottom: 16,
+              borderRadius: 12,
+              background: 'rgba(212,168,67,0.08)',
+              border: '1px solid rgba(212,168,67,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <svg style={{ width: 24, height: 24, color: '#d4a843' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <p className="text-lg font-medium text-white break-all max-w-[90%] truncate">{selectedFile.name}</p>
-            <div className="flex items-center gap-3 mt-3 text-sm text-gray-400">
-              <span className="px-2 py-1 rounded bg-black/30 border border-white/10 uppercase tracking-wider text-xs font-semibold text-gray-300">
+            <p style={{ fontSize: 16, fontWeight: 600, color: '#fffbf5', maxWidth: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</p>
+            <div className="flex items-center gap-3 mt-3" style={{ fontSize: 13, color: '#52525b' }}>
+              <span style={{
+                padding: '2px 8px',
+                borderRadius: 5,
+                background: '#141414',
+                border: '1px solid #1e1e1e',
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#52525b',
+                textTransform: 'uppercase',
+                fontFamily: 'monospace',
+              }}>
                 {selectedFile.type.extension || 'UNKNOWN'}
               </span>
-              <span>•</span>
+              <span>·</span>
               <span className="capitalize">{selectedFile.type.category}</span>
-              <span>•</span>
+              <span>·</span>
               <span>{formatSize(selectedFile.size)}</span>
             </div>
-            <p className="mt-6 text-xs text-gray-500 hover:text-white transition-colors">
+            <p style={{ marginTop: 20, fontSize: 12, color: '#2a2a2a' }} className="hover:text-white transition-colors">
               Click or drag another file to replace
             </p>
           </div>
@@ -168,12 +205,21 @@ export default function UploadZone({ onFileReady }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3"
+            style={{
+              marginTop: 16,
+              padding: 16,
+              borderRadius: 10,
+              background: 'rgba(239,68,68,0.06)',
+              border: '1px solid rgba(239,68,68,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+            }}
           >
-            <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg style={{ width: 18, height: 18, color: '#ef4444', flexShrink: 0 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-sm font-medium text-red-400">{error}</p>
+            <p style={{ fontSize: 13, fontWeight: 500, color: '#ef4444' }}>{error}</p>
           </motion.div>
         )}
       </AnimatePresence>

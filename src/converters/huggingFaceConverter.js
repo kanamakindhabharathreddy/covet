@@ -21,18 +21,35 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
 
     const endpoint = targetFormat === 'unlock' ? '/unlock-pdf' : '/convert';
 
+    // Show "waiting" message once upload finishes
+    let uploadDone = false;
+
     const response = await axios.post(`${HF_URL}${endpoint}`, formData, {
       responseType: 'blob',
+      timeout: 120000, // 120 second timeout
       onUploadProgress: (progressEvent) => {
         if (onProgress && progressEvent.total) {
-          // Map 0 -> 1 upload progress to 0.1 -> 0.6 overall progress
           const uploadRatio = progressEvent.loaded / progressEvent.total;
           const mappedRatio = 0.1 + (uploadRatio * 0.5); 
           onProgress({ 
             status: 'processing', 
             ratio: mappedRatio, 
-            message: 'Sending to LibreOffice...' 
+            message: uploadRatio >= 1 ? 'Waiting for server to convert...' : 'Uploading file...'
           });
+          if (uploadRatio >= 1 && !uploadDone) {
+            uploadDone = true;
+            // Nudge progress slightly past 60% so user sees movement
+            setTimeout(() => {
+              if (onProgress) {
+                onProgress({ status: 'processing', ratio: 0.65, message: 'Server is converting...' });
+              }
+            }, 2000);
+            setTimeout(() => {
+              if (onProgress) {
+                onProgress({ status: 'processing', ratio: 0.7, message: 'Still converting...' });
+              }
+            }, 8000);
+          }
         }
       }
     });
@@ -59,7 +76,9 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress, pass
     // Extract the real error from the API response if available
     let errorMessage = 'LibreOffice conversion failed. Space may be waking up, try again in 30s.';
     
-    if (error.response && error.response.data) {
+    if (error.code === 'ECONNABORTED') {
+      errorMessage = 'Request timed out (120s). The HuggingFace Space may be asleep — try again in 30 seconds.';
+    } else if (error.response && error.response.data) {
         if (error.response.data instanceof Blob) {
             try {
                 const text = await error.response.data.text();

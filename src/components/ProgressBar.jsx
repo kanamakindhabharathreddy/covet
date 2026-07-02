@@ -6,34 +6,72 @@ export default function ProgressBar({ progress = 0, label = "Processing...", eng
   const isLoading = progress <= 0;
 
   const currentLabel = isDone ? 'Done!' : label;
-  const barColor = isDone ? 'bg-green-500' : 'bg-accent';
-  const shadowColor = isDone ? 'shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'shadow-[0_0_15px_rgba(124,58,237,0.5)]';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-2xl mx-auto p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm mt-8"
+      style={{
+        width: '100%',
+        maxWidth: '42rem',
+        margin: '2rem auto',
+        padding: 24,
+        borderRadius: 12,
+        background: '#0f0f0f',
+        border: '1px solid #1e1e1e',
+      }}
     >
-      <div className="flex justify-between items-end mb-4">
-        <h4 className={`text-lg font-medium transition-colors duration-300 ${isDone ? 'text-green-400' : 'text-white'}`}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
+        <h4 style={{
+          fontSize: 16,
+          fontWeight: 600,
+          color: isDone ? '#22c55e' : '#fffbf5',
+          transition: 'color 0.3s',
+        }}>
           {currentLabel}
         </h4>
 
         {engine && (
-          <div className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#a78bfa]">
+          <div style={{
+            padding: '4px 10px',
+            borderRadius: 5,
+            background: 'rgba(212,168,67,0.08)',
+            border: '1px solid rgba(212,168,67,0.15)',
+          }}>
+            <span style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#d4a843',
+              fontFamily: 'monospace',
+            }}>
               {engine}
             </span>
           </div>
         )}
       </div>
 
-      <div className="relative w-full h-3 bg-black/60 rounded-full overflow-hidden mb-2">
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: 4,
+        background: '#1e1e1e',
+        borderRadius: 99,
+        overflow: 'hidden',
+        marginBottom: 8,
+      }}>
         {isLoading ? (
-          <div className="absolute inset-0 bg-accent/10">
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(212,168,67,0.06)' }}>
             <motion.div
-              className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-accent/80 to-transparent"
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: '50%',
+                backgroundImage: 'linear-gradient(90deg, transparent, rgba(212,168,67,0.6), transparent)',
+              }}
               animate={{ x: ['-100%', '250%'] }}
               transition={{
                 repeat: Infinity,
@@ -47,13 +85,29 @@ export default function ProgressBar({ progress = 0, label = "Processing...", eng
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`h-full rounded-full transition-colors duration-300 ${barColor} ${shadowColor}`}
+            style={{
+              height: '100%',
+              borderRadius: 99,
+              backgroundImage: isDone
+                ? 'linear-gradient(90deg, #059669, #34d399)'
+                : 'linear-gradient(90deg, #a07c2e, #d4a843)',
+              boxShadow: isDone
+                ? '0 0 10px rgba(34,197,94,0.4)'
+                : '0 0 10px rgba(212,168,67,0.3)',
+              transition: 'background-image 0.3s',
+            }}
           />
         )}
       </div>
 
-      <div className="flex justify-end">
-        <span className={`text-sm font-bold tracking-wide transition-colors duration-300 ${isDone ? 'text-green-400' : 'text-gray-400'}`}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <span style={{
+          fontSize: 12,
+          fontWeight: 700,
+          fontFamily: 'monospace',
+          color: isDone ? '#22c55e' : '#52525b',
+          transition: 'color 0.3s',
+        }}>
           {isLoading ? '0%' : `${Math.round(progress)}%`}
         </span>
       </div>

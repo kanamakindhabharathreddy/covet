@@ -165,10 +165,10 @@ export default function Converter() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8 text-center"
+        className="mb-8 text-center flex flex-col items-center"
       >
-        <h1 className="text-4xl font-extrabold text-white mb-3">Universal Converter</h1>
-        <p className="text-lg text-gray-400">Transform your files securely inside your browser.</p>
+        <span style={{ fontSize: 11, color: '#2a2a2a', letterSpacing: '0.15em', fontWeight: 600, textTransform: 'uppercase' }}>COVET / CONVERT</span>
+        <h1 style={{ fontSize: '2rem', fontWeight: 700, color: '#fffbf5', marginTop: 8 }}>Drop your file.</h1>
       </motion.div>
 
       <div className="w-full max-w-4xl relative min-h-[400px] flex flex-col items-center justify-center">
@@ -197,22 +197,45 @@ export default function Converter() {
               className="w-full flex flex-col items-center"
             >
               {/* File Info Card */}
-              <div className="w-full max-w-2xl bg-white/5 border border-white/10 p-6 rounded-3xl flex items-center gap-6 shadow-xl backdrop-blur-md">
-                <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(124,58,237,0.2)]">
+              <div 
+                className="w-full max-w-2xl p-6 rounded-[16px] flex items-center gap-6"
+                style={{
+                  background: '#0f0f0f',
+                  border: '1px solid #1e1e1e',
+                }}
+              >
+                <div style={{
+                  width: 56, height: 56, borderRadius: '50%',
+                  background: 'rgba(212,168,67,0.08)',
+                  border: '1px solid rgba(212,168,67,0.15)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 28,
+                }}>
                   {iconMap[detectedType.category] || iconMap.unknown}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-white truncate">{file.name}</h3>
-                  <p className="text-sm text-gray-400 mt-1">
-                    {formatSize(file.size)} • <span className="uppercase text-[#a78bfa]">{detectedType.extension}</span> • <span className="capitalize">{detectedType.category}</span>
-                  </p>
+                  <h3 style={{ fontSize: 16, fontWeight: 600, color: '#fffbf5', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#52525b', background: '#141414', border: '1px solid #1e1e1e', padding: '2px 8px', borderRadius: 5, fontFamily: 'monospace' }}>
+                      {formatSize(file.size)}
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#d4a843', textTransform: 'uppercase', background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.2)', padding: '2px 8px', borderRadius: 5, fontFamily: 'monospace' }}>
+                      {detectedType.extension}
+                    </span>
+                  </div>
                 </div>
                 <button 
                   onClick={resetState}
-                  className="p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition-colors"
+                  style={{
+                    padding: 10, borderRadius: '50%',
+                    background: '#141414', border: '1px solid #1e1e1e',
+                    color: '#52525b', cursor: 'pointer', transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#fffbf5'; e.currentTarget.style.borderColor = '#2a2a2a'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = '#52525b'; e.currentTarget.style.borderColor = '#1e1e1e'; }}
                   title="Change File"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg style={{ width: 18, height: 18 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
