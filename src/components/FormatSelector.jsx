@@ -113,7 +113,7 @@ export default function FormatSelector({ fileType, category, onFormatSelect, onC
             initial={{ opacity: 0, height: 0, y: -10 }}
             animate={{ opacity: 1, height: 'auto', y: 0 }}
             exit={{ opacity: 0, height: 0, y: -10 }}
-            style={{ display: 'flex', justifyContent: 'center', overflow: 'hidden' }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', overflow: 'hidden' }}
           >
             <motion.button
               onClick={() => onConvert && onConvert(selectedFormat.ext, selectedFormat.engine)}
@@ -151,6 +151,35 @@ export default function FormatSelector({ fileType, category, onFormatSelect, onC
                 </>
               )}
             </motion.button>
+            
+            <div style={{ 
+              marginTop: 20, 
+              textAlign: 'center', 
+              fontSize: 10, 
+              color: '#52525b', 
+              fontFamily: 'monospace', 
+              letterSpacing: '0.04em', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: 6 
+            }}>
+              {selectedFormat.engine.toLowerCase().includes('huggingface') ? (
+                <>
+                  <svg style={{ width: 12, height: 12, color: '#a07c2e' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                  </svg>
+                  <span>STATELESS CLOUD &bull; DELETED AFTER CONVERSION</span>
+                </>
+              ) : (
+                <>
+                  <svg style={{ width: 12, height: 12, color: '#d4a843' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>100% LOCAL &bull; NO DATA LEAVES DEVICE</span>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
