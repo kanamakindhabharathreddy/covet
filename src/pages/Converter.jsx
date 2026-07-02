@@ -79,7 +79,7 @@ export default function Converter() {
     }
 
     // Mock other engines via Toast as requested
-    if (engine !== 'ffmpeg' && engine !== 'canvas' && engine !== 'data' && engine !== 'sheetjs' && engine !== 'huggingface' && engine !== 'mammoth' && engine !== 'docx') {
+    if (engine !== 'ffmpeg' && engine !== 'canvas' && engine !== 'data' && engine !== 'sheetjs' && engine !== 'huggingface' && engine !== 'huggingface_unlock' && engine !== 'mammoth' && engine !== 'docx') {
       setErrorMsg(`Support for the ${engine} engine is coming soon!`);
       return;
     }
