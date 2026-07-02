@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const convertViaHuggingFace = async (file, targetFormat, onProgress) => {
+export const convertViaHuggingFace = async (file, targetFormat, onProgress, password = null) => {
   try {
     const HF_URL = import.meta.env.VITE_HF_SPACE_URL || 'https://bharath491-covet-converter.hf.space';
     if (!HF_URL) {
@@ -14,8 +14,14 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('target', targetFormat); // or targetFormat depending on API, assuming targetFormat as a generic parameter
+    
+    if (password) {
+      formData.append('password', password);
+    }
 
-    const response = await axios.post(`${HF_URL}/convert`, formData, {
+    const endpoint = targetFormat === 'unlock' ? '/unlock-pdf' : '/convert';
+
+    const response = await axios.post(`${HF_URL}${endpoint}`, formData, {
       responseType: 'blob',
       onUploadProgress: (progressEvent) => {
         if (onProgress && progressEvent.total) {
@@ -60,7 +66,11 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress) => {
                 const json = JSON.parse(text);
                 errorMessage = json.detail || text;
             } catch (e) {
-                errorMessage = 'Backend API Error: ' + error.message;
+                if (error.response.status === 401) {
+                    errorMessage = "Wrong password. Please try again.";
+                } else {
+                    errorMessage = 'Backend API Error: ' + error.message;
+                }
             }
         } else if (error.response.data.detail) {
             errorMessage = error.response.data.detail;
@@ -69,6 +79,9 @@ export const convertViaHuggingFace = async (file, targetFormat, onProgress) => {
         errorMessage = error.message;
     }
     
+    if (error.response && error.response.status === 401) {
+        throw new Error("Wrong password. Please try again.");
+    }
     throw new Error(errorMessage);
   }
 };

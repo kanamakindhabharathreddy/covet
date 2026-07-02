@@ -58,6 +58,36 @@ export default function FormatSelector({ fileType, category, onFormatSelect, onC
       <div className="flex flex-wrap justify-center gap-4 mb-8">
         {formats.map((format) => {
           const isSelected = selectedFormat?.ext === format.ext;
+          const isUnlock = format.ext === 'unlock';
+
+          if (isUnlock) {
+            return (
+              <motion.button
+                key={format.ext}
+                onClick={() => handleSelect(format)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative flex flex-col items-center justify-center w-28 h-28 rounded-2xl transition-all duration-200 border-2 ${
+                  isSelected
+                    ? 'border-amber-500 bg-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                    : 'border-white/10 bg-white/5 hover:border-amber-500/50 hover:bg-amber-500/10'
+                }`}
+              >
+                <div className={`mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <span className={`text-sm font-bold tracking-wider mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                  Unlock PDF
+                </span>
+                <span className={`text-[10px] font-semibold tracking-wide ${isSelected ? 'text-amber-500' : 'text-gray-500'}`}>
+                  via LibreOffice
+                </span>
+              </motion.button>
+            );
+          }
+
           return (
             <motion.button
               key={format.ext}

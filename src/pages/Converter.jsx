@@ -5,6 +5,7 @@ import FormatSelector from '../components/FormatSelector';
 import ProgressBar from '../components/ProgressBar';
 import DownloadCard from '../components/DownloadCard';
 import MultiImagePdfBuilder from '../components/MultiImagePdfBuilder';
+import PasswordPrompt from '../components/PasswordPrompt';
 import { convertWithFFmpeg } from '../converters/ffmpegConverter';
 import { convertImage } from '../converters/imageConverter';
 import { convertData } from '../converters/dataConverter';
@@ -32,8 +33,9 @@ const iconMap = {
 };
 
 export default function Converter() {
-  // State Machine: IDLE -> SELECTED -> BUILDING_PDF -> CONVERTING -> DONE
+  // State Machine: IDLE -> SELECTED -> PASSWORD_PROMPT -> BUILDING_PDF -> CONVERTING -> DONE
   const [appState, setAppState] = useState('IDLE'); 
+  const [password, setPassword] = useState('');
   
   const [file, setFile] = useState(null);
   const [detectedType, setDetectedType] = useState(null);
@@ -51,6 +53,7 @@ export default function Converter() {
     setResultBlob(null);
     setErrorMsg(null);
     setProgressData({ progress: 0, label: '', engine: '' });
+    setPassword('');
   };
 
   const handleFileReady = (selectedFile, type) => {
@@ -60,13 +63,18 @@ export default function Converter() {
     setErrorMsg(null);
   };
 
-  const handleConvert = async (format, engine) => {
+  const handleConvert = async (format, engine, explicitPassword = null) => {
     setTargetFormat(format);
     setErrorMsg(null);
 
     // If it's a multi-image PDF build, branch off early
     if (engine === 'jspdf') {
       setAppState('BUILDING_PDF');
+      return;
+    }
+
+    if (engine === 'huggingface_unlock') {
+      setAppState('PASSWORD_PROMPT');
       return;
     }
 
@@ -82,7 +90,7 @@ export default function Converter() {
     else if (engine === 'canvas') engineLabel = 'Browser Canvas';
     else if (engine === 'sheetjs') engineLabel = 'SheetJS';
     else if (engine === 'data') engineLabel = 'Data Parser';
-    else if (engine === 'huggingface') engineLabel = 'HuggingFace Space';
+    else if (engine === 'huggingface' || engine === 'huggingface_unlock') engineLabel = 'HuggingFace Space';
     else if (engine === 'mammoth') engineLabel = 'Mammoth Engine';
     else if (engine === 'docx') engineLabel = 'Docx Engine';
     
@@ -126,14 +134,14 @@ export default function Converter() {
             engine: engineLabel 
           });
         });
-      } else if (engine === 'huggingface') {
+      } else if (engine === 'huggingface' || engine === 'huggingface_unlock') {
         blob = await convertViaHuggingFace(file, format, (prog) => {
           setProgressData({ 
             progress: Math.min(Math.round(prog.ratio * 100), 100), 
             label: prog.message || 'Processing...', 
             engine: engineLabel 
           });
-        });
+        }, explicitPassword || password);
       } else if (engine === 'mammoth' || engine === 'docx') {
         blob = await convertDocument(file, format, (prog) => {
           setProgressData({ 
@@ -146,6 +154,7 @@ export default function Converter() {
       
       setResultBlob(blob);
       setAppState('DONE');
+      setPassword('');
     } catch (error) {
       setErrorMsg(error.message || 'An error occurred during conversion.');
       // Keep appState as CONVERTING but errorMsg will trigger the Error Card
@@ -232,6 +241,16 @@ export default function Converter() {
             </motion.div>
           )}
 
+          {appState === 'PASSWORD_PROMPT' && (
+            <PasswordPrompt 
+              onCancel={() => setAppState('SELECTED')}
+              onSubmit={(pwd) => {
+                setPassword(pwd);
+                handleConvert('unlock', 'huggingface_unlock', pwd);
+              }}
+            />
+          )}
+
           {appState === 'BUILDING_PDF' && (
             <MultiImagePdfBuilder 
               initialFile={file}
@@ -279,7 +298,13 @@ export default function Converter() {
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={resetState}
+                onClick={() => {
+                  if (errorMsg.includes("Wrong password")) {
+                    setAppState('PASSWORD_PROMPT');
+                  } else {
+                    resetState();
+                  }
+                }}
                 className="px-10 py-4 rounded-full bg-red-500/20 border border-red-500/30 hover:bg-red-500 text-white font-bold transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]"
               >
                 Try Again
