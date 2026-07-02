@@ -32,13 +32,17 @@ export const convertMarkdown = async (file, format, onProgress) => {
           });
           
           const container = document.createElement('div');
-          container.style.width = '600px';
+          container.style.width = '550px';
           container.style.padding = '20px';
           container.style.fontFamily = 'sans-serif';
           container.style.fontSize = '12px';
           container.style.lineHeight = '1.5';
           container.style.position = 'absolute';
-          container.style.left = '-9999px';
+          container.style.top = '0';
+          container.style.left = '0';
+          container.style.zIndex = '-9999';
+          container.style.backgroundColor = '#ffffff';
+          container.style.color = '#000000';
           container.innerHTML = cleanHtml;
           document.body.appendChild(container);
 
