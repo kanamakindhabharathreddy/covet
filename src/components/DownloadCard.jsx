@@ -4,7 +4,10 @@ import { getCategoryFromExtension } from '../utils/fileDetector';
 
 export default function DownloadCard({ blob, fileName, targetFormat, originalName, onReset }) {
   // Determine the file's category dynamically based on its new targetFormat extension
-  const category = useMemo(() => getCategoryFromExtension(targetFormat), [targetFormat]);
+  const category = useMemo(() => {
+    if (targetFormat === 'unlock' || targetFormat === 'pdf') return targetFormat;
+    return getCategoryFromExtension(targetFormat);
+  }, [targetFormat]);
   
   const iconMap = {
     audio: '🎵',
@@ -14,6 +17,8 @@ export default function DownloadCard({ blob, fileName, targetFormat, originalNam
     spreadsheet: '📊',
     data: '🔡',
     ocr: '🔍',
+    unlock: '📄',
+    pdf: '📄',
     unknown: '📁'
   };
 

@@ -151,11 +151,6 @@ export default function Converter() {
           });
         });
       }
-      
-      if (format === 'unlock') {
-        setTargetFormat('pdf');
-      }
-      
       setResultBlob(blob);
       setAppState('DONE');
       setPassword('');
@@ -327,7 +322,7 @@ export default function Converter() {
             >
               <DownloadCard 
                 blob={resultBlob} 
-                fileName={null} 
+                fileName={targetFormat === 'unlock' && file?.name ? file.name.replace(/\.pdf$/i, '_unlocked.pdf') : null} 
                 targetFormat={targetFormat} 
                 originalName={file?.name} 
                 onReset={resetState} 
