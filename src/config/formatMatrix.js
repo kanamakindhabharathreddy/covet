@@ -25,6 +25,7 @@ export const formatMatrix = {
   document: {
     docx: { txt: "mammoth", html: "mammoth", pdf: "huggingface" },
     txt: { docx: "docx" },
+    md: { html: "marked", pdf: "marked" },
     pdf: { docx: "huggingface", unlock: "huggingface_unlock" },
   },
   data: {

@@ -12,6 +12,7 @@ import { convertData } from '../converters/dataConverter';
 import { convertSpreadsheet } from '../converters/spreadsheetConverter';
 import { convertViaHuggingFace } from '../converters/huggingFaceConverter';
 import { convertDocument } from '../converters/documentConverter';
+import { convertMarkdown } from '../converters/markdownConverter';
 
 const formatSize = (bytes) => {
   if (!bytes || bytes === 0) return '0 B';
@@ -79,7 +80,7 @@ export default function Converter() {
     }
 
     // Mock other engines via Toast as requested
-    if (engine !== 'ffmpeg' && engine !== 'canvas' && engine !== 'data' && engine !== 'sheetjs' && engine !== 'huggingface' && engine !== 'huggingface_unlock' && engine !== 'mammoth' && engine !== 'docx') {
+    if (engine !== 'ffmpeg' && engine !== 'canvas' && engine !== 'data' && engine !== 'sheetjs' && engine !== 'huggingface' && engine !== 'huggingface_unlock' && engine !== 'mammoth' && engine !== 'docx' && engine !== 'marked') {
       setErrorMsg(`Support for the ${engine} engine is coming soon!`);
       return;
     }
@@ -93,6 +94,7 @@ export default function Converter() {
     else if (engine === 'huggingface' || engine === 'huggingface_unlock') engineLabel = 'HuggingFace Space';
     else if (engine === 'mammoth') engineLabel = 'Mammoth Engine';
     else if (engine === 'docx') engineLabel = 'Docx Engine';
+    else if (engine === 'marked') engineLabel = 'Marked Engine';
     
     setProgressData({ progress: 0, label: 'Initializing...', engine: engineLabel });
 
@@ -144,6 +146,14 @@ export default function Converter() {
         }, explicitPassword || password);
       } else if (engine === 'mammoth' || engine === 'docx') {
         blob = await convertDocument(file, format, (prog) => {
+          setProgressData({ 
+            progress: Math.min(Math.round(prog.ratio * 100), 100), 
+            label: prog.message || 'Processing...', 
+            engine: engineLabel 
+          });
+        });
+      } else if (engine === 'marked') {
+        blob = await convertMarkdown(file, format, (prog) => {
           setProgressData({ 
             progress: Math.min(Math.round(prog.ratio * 100), 100), 
             label: prog.message || 'Processing...', 
